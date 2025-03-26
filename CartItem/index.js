@@ -1,35 +1,75 @@
-import Header from '../Header'
-import CartListView from '../CartListView'
-
+import {BsPlusSquare, BsDashSquare} from 'react-icons/bs'
+import {AiFillCloseCircle} from 'react-icons/ai'
 import CartContext from '../../context/CartContext'
-import EmptyCartView from '../EmptyCartView'
-
 import './index.css'
 
-const Cart = () => (
+const CartItem = props => (
   <CartContext.Consumer>
     {value => {
-      const {cartList} = value
-      const showEmptyView = cartList.length === 0
-      // TODO: Update the functionality to remove all the items in the cart
+      const {
+        incrementCartItemQuantity,
+        decrementCartItemQuantity,
+        removeCartItem,
+      } = value
+      const {cartItemDetails} = props
+      const {id, title, brand, quantity, price, imageUrl} = cartItemDetails
 
       return (
-        <>
-          <Header />
-          <div className="cart-container">
-            {showEmptyView ? (
-              <EmptyCartView />
-            ) : (
-              <div className="cart-content-container">
-                <h1 className="cart-heading">My Cart</h1>
-                <CartListView />
-                {/* TODO: Add your code for Cart Summary here */}
-              </div>
-            )}
+        <li className="cart-item" data-testid={`cart-item-${id}`}>
+          <img className="cart-product-image" src={imageUrl} alt={title} />
+          <div className="cart-item-details-container">
+            <div className="cart-product-title-brand-container">
+              <p className="cart-product-title">{title}</p>
+              <p className="cart-product-brand">by {brand}</p>
+            </div>
+            <div className="cart-quantity-container">
+              <button
+                type="button"
+                className="quantity-controller-button"
+                data-testid="minus"
+                onClick={() => decrementCartItemQuantity(id)}
+              >
+                <BsDashSquare color="#52606D" size={12} />
+              </button>
+              <p className="cart-quantity" data-testid="quantity">
+                {quantity}
+              </p>
+              <button
+                type="button"
+                className="quantity-controller-button"
+                data-testid="plus"
+                onClick={() => incrementCartItemQuantity(id)}
+              >
+                <BsPlusSquare color="#52606D" size={12} />
+              </button>
+            </div>
+            <div className="total-price-remove-container">
+              <p className="cart-total-price" data-testid="total-price">
+                Rs {price * quantity}/-
+              </p>
+              <button
+                className="remove-button"
+                type="button"
+                data-testid="remove"
+                onClick={() => removeCartItem(id)}
+              >
+                Remove
+              </button>
+            </div>
           </div>
-        </>
+          <button
+            className="delete-button"
+            type="button"
+            data-testid="remove-icon"
+            onClick={() => removeCartItem(id)}
+          >
+            <AiFillCloseCircle color="#616E7C" size={20} />
+          </button>
+        </li>
       )
     }}
   </CartContext.Consumer>
 )
-export default Cart
+
+export default CartItem
+
