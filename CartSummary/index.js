@@ -1,38 +1,32 @@
 import CartContext from '../../context/CartContext'
+
 import './index.css'
 
 const CartSummary = () => (
   <CartContext.Consumer>
     {value => {
-      const {cartList, removeAllCartItems} = value
-
-      const totalAmount = cartList.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0,
-      )
-      const totalItems = cartList.reduce((acc, item) => acc + item.quantity, 0)
+      const {cartList} = value
+      let total = 0
+      cartList.forEach(eachCartItem => {
+        total += eachCartItem.price * eachCartItem.quantity
+      })
 
       return (
-        <div className="cart-summary-container">
-          <h1 className="order-total">
-            Order Total: Rs <span data-testid="total-price">{totalAmount}</span>
-            /-
-          </h1>
-          <p className="total-items">
-            <span data-testid="total-items">{totalItems}</span> Items in Cart
-          </p>
-          <button className="checkout-button" type="button">
+        <>
+          <div className="cart-summary-container">
+            <h1 className="order-total-value">
+              <span className="order-total-label">Order Total:</span> Rs {total}
+              /-
+            </h1>
+            <p className="total-items">{cartList.length} Items in cart</p>
+            <button type="button" className="checkout-button d-sm-none">
+              Checkout
+            </button>
+          </div>
+          <button type="button" className="checkout-button d-lg-none">
             Checkout
           </button>
-          <button
-            className="remove-all-button"
-            type="button"
-            data-testid="remove-all"
-            onClick={removeAllCartItems}
-          >
-            Remove All
-          </button>
-        </div>
+        </>
       )
     }}
   </CartContext.Consumer>
